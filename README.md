@@ -17,7 +17,7 @@ yarn install
 yarn watch:server
 
 # Run webpack-dev-server
-yarn watch:client
+yarn watch:client // watch:client çalışmıyor "npm run build" --> "npm run watch:server"
 ```
 
 
