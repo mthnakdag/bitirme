@@ -1,11 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef ,Component} from "react";
 import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
+import Switch from 'react-switch';
 
-function CallWindow({
-  show,
-  showModal
-}) {
+class CallWindow extends Component{
+  constructor() {
+    super()
+    this.state={
+      checked:false,
+    }
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleChange(checked){
+    this.setState({checked})
+  }
+  render(){
+    const {show,showModal}=this.props
   return (
         <Modal
           style={{ opacity: "1", color: "black" }}
@@ -15,7 +26,22 @@ function CallWindow({
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+          <label>
+            <span> Detection</span>
+          <Switch
+           className="react-switch"
+           onChange={this.handleChange}
+           checked={this.state.checked}>
+           </Switch>
+           </label>
+           <label>
+            <span> Segmentation</span>
+          <Switch
+           className="react-switch"
+           onChange={this.handleChange}
+           checked={this.state.checked}>
+           </Switch>
+           </label>
           <Modal.Footer>
             <Button variant="secondary" onClick={showModal}>
               Close
@@ -26,6 +52,7 @@ function CallWindow({
           </Modal.Footer>
         </Modal>
   );
+  }
 }
 
 CallWindow.propTypes = {
