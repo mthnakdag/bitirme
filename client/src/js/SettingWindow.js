@@ -8,6 +8,8 @@ class CallWindow extends Component{
     super()
     this.state={
       checked:false,
+      checkedSegmentation:false,
+      checkedDetection:false,
     }
     this.handleChange = this.handleChange.bind(this)
   }
@@ -31,7 +33,7 @@ class CallWindow extends Component{
           <Switch
            className="react-switch"
            onChange={this.handleChange}
-           checked={this.state.checked}>
+           checked={this.state.checkedDetection}>
            </Switch>
            </label>
            <label>
@@ -39,7 +41,7 @@ class CallWindow extends Component{
           <Switch
            className="react-switch"
            onChange={this.handleChange}
-           checked={this.state.checked}>
+           checked={this.state.checkedSegmentation}>
            </Switch>
            </label>
           <Modal.Footer>
