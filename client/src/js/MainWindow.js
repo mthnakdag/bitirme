@@ -9,15 +9,16 @@ function MainWindow({ startCall, clientId }) {
    * @param {Boolean} video
    */
   const callWithVideo = (video) => {
-    const config = { audio: true, video };
+    const config = { audio: false, video };
     return () => friendID && startCall(true, friendID, config);
   };
 
   return (
     <div className="container main-window">
       <div>
+        <div style={{marginLeft:"220px",}}>
         <h3>
-          Hi, your ID is
+          Your current ID at this call,
           <input
             type="text"
             className="txt-clientId"
@@ -25,16 +26,19 @@ function MainWindow({ startCall, clientId }) {
             readOnly
           />
         </h3>
-        <h4>Get started by calling a friend below</h4>
-      </div>
-      <div>
+        </div>
+        <div style={{marginLeft:"220px",}}>
+        <h4>ID of your contact,
         <input
           type="text"
           className="txt-clientId"
           spellCheck={false}
-          placeholder="Your friend ID"
+          placeholder="Your contact ID"
           onChange={(event) => setFriendID(event.target.value)}
         />
+        </h4>
+        </div>
+        <div style={{marginLeft:"420px",}}>
         <div>
           <button
             type="button"
@@ -46,6 +50,12 @@ function MainWindow({ startCall, clientId }) {
             className="btn-action fa fa-phone"
             onClick={callWithVideo(false)}
           />
+         <button
+          type="button"
+          className="btn-action fa fa-microphone"
+            onClick={callWithVideo(false)}
+        />
+        </div>
         </div>
       </div>
     </div>
