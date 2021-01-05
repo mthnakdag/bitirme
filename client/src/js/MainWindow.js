@@ -7,10 +7,16 @@ function MainWindow({ startCall, clientId }) {
   /**
    * Start the call with or without video
    * @param {Boolean} video
+   * @param {Boolean} audio
    */
   const callWithVideo = (video) => {
     const config = { audio: false, video };
     return () => friendID && startCall(true, friendID, config);
+  };
+
+  const callWithAudio = (audio) => {
+    const configg = { video: false, audio };
+    return () => friendID && startCall(true, friendID, configg);
   };
 
   return (
@@ -53,7 +59,7 @@ function MainWindow({ startCall, clientId }) {
          <button
           type="button"
           className="btn-action fa fa-microphone"
-            onClick={callWithVideo(false)}
+            onClick={callWithAudio(true)}
         />
         </div>
         </div>

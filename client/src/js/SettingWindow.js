@@ -21,7 +21,7 @@ class CallWindow extends Component{
     const {show,showModal}=this.props
   return (
         <Modal
-          style={{ opacity: "1", color: "black" }}
+          style={{ opacity: "1",marginTop:"5px", color: "black" }}
           show={show}
           onHide={showModal}
         >
