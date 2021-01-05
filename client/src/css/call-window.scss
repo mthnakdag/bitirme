@@ -40,19 +40,21 @@
 	}
 	
 	#localVideo {
-		width:40%;
-		height:100%;
+		width:45%;
+		height:105%;
 		left:0;
 		top:0;
 		margin-left: 30px;
+		margin-top: -23px;
 	}
 	
 	#peerVideo {
-		width:40%;
-		height:100%;
+		width:45%;
+		height:105%;
 		right:0;
 		top:0;
 		margin-right: 30px;
+		margin-top: -20px;
 	}
 }
 
@@ -85,7 +87,7 @@
 		}
 		
 		&:not(.hangup) {
-			background-color: $blue;
+			background-color: $green;
 			
 			&.disable {
 				background-color: $red;
@@ -93,6 +95,9 @@
 		}
 		&.setting{
 			background-color: $gray;
+			position:absolute;
+			margin-top: -650px;
+			margin-left: 600px;
 		}
 	}
 }
