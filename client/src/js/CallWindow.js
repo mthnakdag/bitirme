@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import classnames from "classnames";
 import { Modal, Button } from "react-bootstrap";
-
+import SettingWindow from "./SettingWindow";
 const getButtonClass = (icon, enabled) =>
   classnames(`btn-action fa ${icon}`, { disable: !enabled });
 
@@ -21,7 +21,6 @@ function CallWindow({
   const [showSetting, setShowSetting] = useState(false);
 
   const showModal = () => {
-    console.log(showSetting);
     setShowSetting(!showSetting);
   };
 
@@ -58,24 +57,7 @@ function CallWindow({
       <video id="peerVideo" ref={peerVideo} autoPlay />
       <video id="localVideo" ref={localVideo} autoPlay muted />
       {showSetting && (
-        <Modal
-          style={{ opacity: "1", color: "black" }}
-          show={showSetting}
-          onHide={showModal}
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={showModal}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={showModal}>
-              Save Changes
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <SettingWindow show={showSetting} showModal={showModal} />
       )}
 
       <div className="video-control">
