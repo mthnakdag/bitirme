@@ -59,6 +59,10 @@ function CallWindow({ peerSrc, localSrc, config, mediaDevice, status, endCall })
           className="btn-action hangup fa fa-phone"
           onClick={() => endCall(true)}
         />
+        <button
+          type="button"
+          className="btn-action setting fa fa-cog"
+        />
       </div>
     </div>
   );

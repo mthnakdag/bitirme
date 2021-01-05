@@ -78,7 +78,7 @@
 		&:hover {
 			opacity: 0.8;	
 		}
-		
+
 		&.hangup {
 			background-color: $red;
 			@include transform(rotate(135deg));
@@ -90,6 +90,9 @@
 			&.disable {
 				background-color: $red;
 			}
+		}
+		&.setting{
+			background-color: gray;
 		}
 	}
 }
