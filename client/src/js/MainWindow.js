@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 
 function MainWindow({ startCall, clientId }) {
   const [friendID, setFriendID] = useState(null);
@@ -20,9 +20,16 @@ function MainWindow({ startCall, clientId }) {
   };
 
   return (
-    <div className="container main-window">
+    <div
+      className="container main-window"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+      }}
+    >
       <div>
-        <div style={{marginLeft:"220px",}}>
         <h3>
           Your current ID at this call,
           <input
@@ -32,37 +39,43 @@ function MainWindow({ startCall, clientId }) {
             readOnly
           />
         </h3>
-        </div>
-        <div style={{marginLeft:"220px",}}>
-        <h4>ID of your contact,
-        <input
-          type="text"
-          className="txt-clientId"
-          spellCheck={false}
-          placeholder="Your contact ID"
-          onChange={(event) => setFriendID(event.target.value)}
-        />
+      </div>
+      <div>
+        <h4>
+          ID of your contact,
+          <input
+            type="text"
+            className="txt-clientId"
+            spellCheck={false}
+            placeholder="Your contact ID"
+            onChange={(event) => setFriendID(event.target.value)}
+          />
         </h4>
-        </div>
-        <div style={{marginLeft:"420px",}}>
-        <div>
-          <button
-            type="button"
-            className="btn-action fa fa-video-camera"
-            onClick={callWithVideo(true)}
-          />
-          <button
-            type="button"
-            className="btn-action fa fa-phone"
-            onClick={callWithVideo(false)}
-          />
-         <button
+      </div>
+      <div
+        style={{
+          paddingTop: "4%",
+          width: "30%",
+          display: "flex",
+          justifyContent: "space-between",
+          justifyItems: "flex-start",
+        }}
+      >
+        <button
+          type="button"
+          className="btn-action fa fa-video-camera"
+          onClick={callWithVideo(true)}
+        />
+        <button
+          type="button"
+          className="btn-action fa fa-phone"
+          onClick={callWithVideo(false)}
+        />
+        <button
           type="button"
           className="btn-action fa fa-microphone"
-            onClick={callWithAudio(true)}
+          onClick={callWithAudio(true)}
         />
-        </div>
-        </div>
       </div>
     </div>
   );
@@ -70,7 +83,7 @@ function MainWindow({ startCall, clientId }) {
 
 MainWindow.propTypes = {
   clientId: PropTypes.string.isRequired,
-  startCall: PropTypes.func.isRequired
+  startCall: PropTypes.func.isRequired,
 };
 
 export default MainWindow;
