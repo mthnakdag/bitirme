@@ -2,20 +2,17 @@ import React, { useState, useEffect, useRef ,Component} from "react";
 import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 import Switch from 'react-switch';
+import ToggleButton from 'react-toggle-button'
+
+const io = require('socket.io')(5000)
 
 class CallWindow extends Component{
   constructor() {
     super()
     this.state={
-      checked:false,
-      checkedSegmentation:false,
-      checkedDetection:false,
+      value:false,
+      valuee:false,
     }
-    this.handleChange = this.handleChange.bind(this)
-  }
-
-  handleChange(checked){
-    this.setState({checked})
   }
   render(){
     const {show,showModal}=this.props
@@ -30,19 +27,35 @@ class CallWindow extends Component{
           </Modal.Header>
           <label>
             <span> Detection</span>
-          <Switch
-           className="react-switch"
-           onChange={this.handleChange}
-           checked={this.state.checkedDetection}>
-           </Switch>
+          <ToggleButton
+               value={ this.state.value || false}
+               onToggle={(value) => {
+               this.setState({
+                  value: !value,
+               })
+                const sockett = io();
+               sockett.on('connection',function(value)  {
+                 if(value==true){
+                    sockett.emit("message",'User use a detection');
+                 }
+               });
+             }}/>
            </label>
            <label>
             <span> Segmentation</span>
-          <Switch
-           className="react-switch"
-           onChange={this.handleChange}
-           checked={this.state.checkedSegmentation}>
-           </Switch>
+            <ToggleButton
+               value={ this.state.valuee || false }
+               onToggle={(value) => {
+               this.setState({
+                  valuee: !value,
+               })
+                const sockett = io();
+               sockett.on('connection',function(value) {
+                 if(value==true){
+                    sockett.emit("message",'User use a segmentation');
+                 }
+               });
+             }}/>           
            </label>
           <Modal.Footer>
             <Button variant="secondary" onClick={showModal}>
