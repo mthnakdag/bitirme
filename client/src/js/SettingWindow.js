@@ -4,7 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 import Switch from 'react-switch';
 import ToggleButton from 'react-toggle-button'
 
-const io = require('socket.io')(5000)
+//const io = require('socket.io')(5000)
 
 class CallWindow extends Component{
   constructor() {
@@ -33,12 +33,14 @@ class CallWindow extends Component{
                this.setState({
                   value: !value,
                })
+               /*
                 const sockett = io();
                sockett.on('connection',function(value)  {
                  if(value==true){
                     sockett.emit("message",'User use a detection');
                  }
                });
+               */
              }}/>
            </label>
            <label>
@@ -49,12 +51,14 @@ class CallWindow extends Component{
                this.setState({
                   valuee: !value,
                })
+               /*
                 const sockett = io();
                sockett.on('connection',function(value) {
                  if(value==true){
                     sockett.emit("message",'User use a segmentation');
                  }
                });
+               */
              }}/>           
            </label>
           <Modal.Footer>
