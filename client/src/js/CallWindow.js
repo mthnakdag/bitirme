@@ -5,7 +5,7 @@ import { Modal, Button } from "react-bootstrap";
 import SettingWindow from "./SettingWindow";
 import * as tf from "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
-import socket from './socket';
+import socket from "./socket";
 
 const getButtonClass = (icon, enabled) =>
   classnames(`btn-action fa ${icon}`, { disable: !enabled });
@@ -34,8 +34,7 @@ function CallWindow({
   const [segmentationBoolPeer, setSegmentationBoolPeer] = useState(false);
 
   useEffect(() => {
-    console.log("hi");
-    socket.on("segment", (data) => {
+    socket.on("segmentTo", (data) => {
       console.log(data);
       console.log("SocketConnection");
     });
@@ -148,8 +147,8 @@ function CallWindow({
   useEffect(() => {
     if (peerVideo.current && peerSrc) peerVideo.current.srcObject = peerSrc;
     if (localVideo.current && localSrc) localVideo.current.srcObject = localSrc;
-  });
-
+  }, [localSrc,peerSrc]);
+  
   useEffect(() => {
     if (mediaDevice) {
       mediaDevice.toggle("Video", video);
@@ -240,11 +239,6 @@ function CallWindow({
           type="button"
           className="btn-action hangup fa fa-phone"
           onClick={() => endCall(true)}
-        />
-        <button
-          type="button"
-          className="btn-action"
-          onClick={() => detectBody()}
         />
 
         <button

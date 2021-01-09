@@ -31,9 +31,11 @@ function initSocket(socket) {
       if (receiver) {
         receiver.emit('end');
       }
-    }).on('segment',(data)=>{
+    })
+    .on('segment', (data)=>{
       console.log(data)
       console.log("Segment")
+      socket.emit('segmentTo', data)
     })
     .on('disconnect', () => {
       users.remove(id);
