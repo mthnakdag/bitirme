@@ -86,6 +86,7 @@ class App extends Component {
         {!_.isEmpty(this.config) && (
           <CallWindow
             status={callWindow}
+            callFrom={callFrom}
             localSrc={localSrc}
             peerSrc={peerSrc}
             config={this.config}

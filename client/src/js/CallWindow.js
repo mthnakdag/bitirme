@@ -5,12 +5,15 @@ import { Modal, Button } from "react-bootstrap";
 import SettingWindow from "./SettingWindow";
 import * as tf from "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
+import socket from './socket';
+
 const getButtonClass = (icon, enabled) =>
   classnames(`btn-action fa ${icon}`, { disable: !enabled });
 
 function CallWindow({
   peerSrc,
   localSrc,
+  callFrom,
   config,
   mediaDevice,
   status,
@@ -25,7 +28,18 @@ function CallWindow({
   const [audio, setAudio] = useState(config.audio);
   const [showSetting, setShowSetting] = useState(false);
   const [bodyPixModel, setBodyPixModel] = useState(null);
-  const [segment, setSegment] = useState(false);
+  const [detectionBool, setDetectionBool] = useState(false);
+
+  const [segmentationBoolLocal, setSegmentationBoolLocal] = useState(false);
+  const [segmentationBoolPeer, setSegmentationBoolPeer] = useState(false);
+
+  useEffect(() => {
+    console.log("hi");
+    socket.on("segment", (data) => {
+      console.log(data);
+      console.log("SocketConnection");
+    });
+  });
 
   useEffect(() => {
     tf.backend("webgl");
@@ -53,38 +67,48 @@ function CallWindow({
       localVideo.current !== null &&
       localVideo.current !== undefined
     ) {
-      if (!segment) return;
-      bodyPixModel
-        .segmentPerson(peerVideo.current, {
-          flipHorizontal: true,
-          internalResolution: 0.25,
-          segmentationThreshold: 0.5,
-          //maxDetections:1
-          nmsRadius: 2,
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        .then((segmentation) => {
-          if (segmentation !== undefined && segmentation !== null)
-            drawBody(segmentation, "peer");
-        });
+      console.log("1");
+      if (!segmentationBoolLocal && !segmentationBoolPeer) {
+        console.log("2");
+        return;
+      }
 
-      bodyPixModel
-        .segmentPerson(localVideo.current, {
-          flipHorizontal: true,
-          internalResolution: 0.25,
-          segmentationThreshold: 0.5,
-          //maxDetections:1
-          nmsRadius: 2,
-        })
-        .catch((err) => {
-          console.error(err);
-        })
-        .then((segmentation) => {
-          if (segmentation !== undefined && segmentation !== null)
-            drawBody(segmentation, "local");
-        });
+      if (segmentationBoolPeer) {
+        console.log("3");
+        bodyPixModel
+          .segmentPerson(peerVideo.current, {
+            flipHorizontal: true,
+            internalResolution: 0.25,
+            segmentationThreshold: 0.5,
+            //maxDetections:1
+            nmsRadius: 2,
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+          .then((segmentation) => {
+            if (segmentation !== undefined && segmentation !== null)
+              drawBody(segmentation, "peer");
+          });
+      }
+      if (segmentationBoolLocal) {
+        console.log("4");
+        bodyPixModel
+          .segmentPerson(localVideo.current, {
+            flipHorizontal: true,
+            internalResolution: 0.25,
+            segmentationThreshold: 0.5,
+            //maxDetections:1
+            nmsRadius: 2,
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+          .then((segmentation) => {
+            if (segmentation !== undefined && segmentation !== null)
+              drawBody(segmentation, "local");
+          });
+      }
     }
     requestAnimationFrame(detectBody);
   };
@@ -131,7 +155,7 @@ function CallWindow({
       mediaDevice.toggle("Video", video);
       mediaDevice.toggle("Audio", audio);
     }
-  });
+  }, [video, audio]);
 
   /**
    * Turn on/off a media device
@@ -159,7 +183,13 @@ function CallWindow({
           ref={peerVideo}
           autoPlay
         />
-        <canvas width="350px" height="200px" id="peerCanvas" ref={peerCanvas} />
+        <canvas
+          style={{ visibility: segmentationBoolPeer ? "visible" : "hidden" }}
+          width="350px"
+          height="200px"
+          id="peerCanvas"
+          ref={peerCanvas}
+        />
         <video
           width="350px"
           height="200px"
@@ -168,13 +198,29 @@ function CallWindow({
           autoPlay
         />
         <canvas
+          style={{ visibility: segmentationBoolLocal ? "visible" : "hidden" }}
           width="350px"
           height="200px"
           id="localCanvas"
           ref={localCanvas}
         />
+
         {showSetting && (
-          <SettingWindow show={showSetting} showModal={showModal} />
+          <SettingWindow
+            show={showSetting}
+            showModal={showModal}
+            detectionBool={detectionBool}
+            setDetectionBool={setDetectionBool}
+            segmentationBool={
+              callFrom === "" ? segmentationBoolLocal : segmentationBoolPeer
+            }
+            setSegmentationBool={
+              callFrom === ""
+                ? setSegmentationBoolLocal
+                : setSegmentationBoolPeer
+            }
+            detectBody={detectBody}
+          />
         )}
       </div>
       <div className="video-control">
@@ -215,6 +261,7 @@ CallWindow.propTypes = {
   status: PropTypes.string.isRequired,
   localSrc: PropTypes.object, // eslint-disable-line
   peerSrc: PropTypes.object, // eslint-disable-line
+  callFrom: PropTypes.string,
   config: PropTypes.shape({
     audio: PropTypes.bool.isRequired,
     video: PropTypes.bool.isRequired,
