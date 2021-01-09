@@ -33,9 +33,7 @@ function initSocket(socket) {
       }
     })
     .on('segment', (data)=>{
-      console.log(data)
-      console.log("Segment")
-      socket.emit('segmentTo', data)
+      socket.broadcast.emit('segmentTo', data)
     })
     .on('disconnect', () => {
       users.remove(id);

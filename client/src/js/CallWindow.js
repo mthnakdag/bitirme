@@ -36,7 +36,10 @@ function CallWindow({
   useEffect(() => {
     socket.on("segmentTo", (data) => {
       console.log(data);
-      console.log("SocketConnection");
+      data.who === "peer"
+        ? setSegmentationBoolPeer(data.data)
+        : setSegmentationBoolLocal(data.data);
+      detectBody();
     });
   });
 
@@ -66,47 +69,43 @@ function CallWindow({
       localVideo.current !== null &&
       localVideo.current !== undefined
     ) {
-      console.log("1");
-      if (!segmentationBoolLocal && !segmentationBoolPeer) {
-        console.log("2");
+      if (!(segmentationBoolLocal || segmentationBoolPeer)) {
         return;
-      }
-
-      if (segmentationBoolPeer) {
-        console.log("3");
-        bodyPixModel
-          .segmentPerson(peerVideo.current, {
-            flipHorizontal: true,
-            internalResolution: 0.25,
-            segmentationThreshold: 0.5,
-            //maxDetections:1
-            nmsRadius: 2,
-          })
-          .catch((err) => {
-            console.error(err);
-          })
-          .then((segmentation) => {
-            if (segmentation !== undefined && segmentation !== null)
-              drawBody(segmentation, "peer");
-          });
-      }
-      if (segmentationBoolLocal) {
-        console.log("4");
-        bodyPixModel
-          .segmentPerson(localVideo.current, {
-            flipHorizontal: true,
-            internalResolution: 0.25,
-            segmentationThreshold: 0.5,
-            //maxDetections:1
-            nmsRadius: 2,
-          })
-          .catch((err) => {
-            console.error(err);
-          })
-          .then((segmentation) => {
-            if (segmentation !== undefined && segmentation !== null)
-              drawBody(segmentation, "local");
-          });
+      } else {
+        if (segmentationBoolPeer) {
+          bodyPixModel
+            .segmentPerson(peerVideo.current, {
+              flipHorizontal: true,
+              internalResolution: 0.25,
+              segmentationThreshold: 0.5,
+              //maxDetections:1
+              nmsRadius: 2,
+            })
+            .catch((err) => {
+              console.error(err);
+            })
+            .then((segmentation) => {
+              if (segmentation !== undefined && segmentation !== null)
+                drawBody(segmentation, "peer");
+            });
+        }
+        if (segmentationBoolLocal) {
+          bodyPixModel
+            .segmentPerson(localVideo.current, {
+              flipHorizontal: true,
+              internalResolution: 0.25,
+              segmentationThreshold: 0.5,
+              //maxDetections:1
+              nmsRadius: 2,
+            })
+            .catch((err) => {
+              console.error(err);
+            })
+            .then((segmentation) => {
+              if (segmentation !== undefined && segmentation !== null)
+                drawBody(segmentation, "local");
+            });
+        }
       }
     }
     requestAnimationFrame(detectBody);
@@ -147,8 +146,8 @@ function CallWindow({
   useEffect(() => {
     if (peerVideo.current && peerSrc) peerVideo.current.srcObject = peerSrc;
     if (localVideo.current && localSrc) localVideo.current.srcObject = localSrc;
-  }, [localSrc,peerSrc]);
-  
+  }, [localSrc, peerSrc]);
+
   useEffect(() => {
     if (mediaDevice) {
       mediaDevice.toggle("Video", video);
@@ -218,6 +217,7 @@ function CallWindow({
                 ? setSegmentationBoolLocal
                 : setSegmentationBoolPeer
             }
+            who={callFrom === "" ? "local" : "peer"}
             detectBody={detectBody}
           />
         )}

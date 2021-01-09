@@ -12,6 +12,7 @@ const SettingWindow = ({
   setDetectionBool,
   segmentationBool,
   setSegmentationBool,
+  who,
   detectBody,
 }) => {
   return (
@@ -39,8 +40,8 @@ const SettingWindow = ({
           value={segmentationBool}
           onToggle={(value) => {
             setSegmentationBool(!value);
-            socket.emit("segment", { data: !value });
-            /*detectBody(); */
+            socket.emit("segment", { who: who, data: !value });
+            detectBody();
           }}
         />
       </label>
