@@ -5,6 +5,8 @@ import { Modal, Button } from "react-bootstrap";
 import SettingWindow from "./SettingWindow";
 import * as tf from "@tensorflow/tfjs";
 import * as bodyPix from "@tensorflow-models/body-pix";
+import * as cocossd from "@tensorflow-models/coco-ssd";
+
 import socket from "./socket";
 
 const getButtonClass = (icon, enabled) =>
@@ -33,6 +35,8 @@ function CallWindow({
   const [segmentationBoolLocal, setSegmentationBoolLocal] = useState(false);
   const [segmentationBoolPeer, setSegmentationBoolPeer] = useState(false);
 
+  const [cocoSSDModel, setCocoSSDModel] = useState(null);
+
   useEffect(() => {
     socket.on("segmentTo", (data) => {
       console.log(data);
@@ -59,7 +63,84 @@ function CallWindow({
         setBodyPixModel(objNet);
         console.log("bodyPix loaded");
       });
+    cocossd
+      .load()
+      .catch((error) => {
+        console.error(error);
+      })
+      .then((objNet) => {
+        setCocoSSDModel(objNet);
+        console.log("cocoSSD is loaded");
+        console.log(objNet);
+      });
   }, []);
+
+  const detectObj = () => {
+    if (
+      cocoSSDModel !== null &&
+      peerVideo.current !== null &&
+      peerVideo.current !== undefined &&
+      localVideo.current !== null &&
+      localVideo.current !== undefined
+    ) {
+      if (!detectionBool) {
+        console.log(1);
+        return;
+      } else {
+        if (detectionBool) {
+          cocoSSDModel
+            .detect(callFrom === "" ? localVideo.current : peerVideo.current)
+            .catch((err) => console.error(err))
+            .then((detect) => {
+              console.log(detect);
+              if (detect !== undefined && detect !== null) {
+                var classes = [];
+                console.log("outer", detect);
+                detect.forEach((element) => {
+                  classes.push(element.class);
+                });
+                if (
+                  !classes.includes("person") ||
+                  classes.includes("cell phone") ||
+                  classes.includes("remote")
+                ) {
+                  setTimeout(() => {
+                    if (detectionBool) {
+                      cocoSSDModel
+                        .detect(
+                          callFrom === ""
+                            ? localVideo.current
+                            : peerVideo.current
+                        )
+                        .then((detection) => {
+                          console.log("inner", detection);
+                          if (detection !== undefined && detection !== null) {
+                            var classes2 = [];
+                            detection.forEach((element) => {
+                              classes2.push(element.class);
+                            });
+                            if (
+                              !classes2.includes("person") ||
+                              classes2.includes("cell phone") ||
+                              classes2.includes("remote")
+                            ) {
+                              setAudio(false);
+                              setVideo(false);
+                              return;
+                            }
+                          }
+                        });
+                    }
+                  }, 3000);
+                  return;
+                }
+              }
+            });
+        }
+        requestAnimationFrame(detectObj);
+      }
+    }
+  };
 
   const detectBody = () => {
     if (
@@ -106,9 +187,9 @@ function CallWindow({
                 drawBody(segmentation, "local");
             });
         }
+        requestAnimationFrame(detectBody);
       }
     }
-    requestAnimationFrame(detectBody);
   };
 
   const drawBody = (segmentation, control) => {
@@ -219,6 +300,7 @@ function CallWindow({
             }
             who={callFrom === "" ? "local" : "peer"}
             detectBody={detectBody}
+            detectObj={detectObj}
           />
         )}
       </div>
@@ -227,7 +309,10 @@ function CallWindow({
           key="btnVideo"
           type="button"
           className={getButtonClass("fa-video-camera", video)}
-          onClick={() => toggleMediaDevice("video")}
+          onClick={() => {
+            toggleMediaDevice("video");
+            detectObj();
+          }}
         />
         <button
           key="btnAudio"

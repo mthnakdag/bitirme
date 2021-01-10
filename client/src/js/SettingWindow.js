@@ -14,6 +14,7 @@ const SettingWindow = ({
   setSegmentationBool,
   who,
   detectBody,
+  detectObj,
 }) => {
   return (
     <Modal
@@ -30,7 +31,8 @@ const SettingWindow = ({
           value={detectionBool}
           onToggle={(value) => {
             setDetectionBool(!value);
-            console.log(value);
+            console.log(!value);
+            setTimeout(()=> detectObj(),1000)
           }}
         />
       </label>
