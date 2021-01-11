@@ -4,6 +4,7 @@ import { Modal, Button } from "react-bootstrap";
 import Switch from "react-switch";
 import ToggleButton from "react-toggle-button";
 import socket from "./socket";
+import Grid from "@material-ui/core";
 
 const SettingWindow = ({
   show,
@@ -23,8 +24,16 @@ const SettingWindow = ({
       onHide={showModal}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
+        <Modal.Title style={{marginTop:"50px"}}>Modal heading</Modal.Title>
       </Modal.Header>
+      <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "left",
+        flexDirection: "column",
+      }}
+    >
       <label>
         <span> Detection</span>
         <ToggleButton
@@ -36,6 +45,15 @@ const SettingWindow = ({
           }}
         />
       </label>
+      </div>
+      <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "right",
+        flexDirection: "column",
+      }}
+    >
       <label>
         <span> Segmentation</span>
         <ToggleButton
@@ -47,6 +65,7 @@ const SettingWindow = ({
           }}
         />
       </label>
+      </div>
       <Modal.Footer>
         <Button variant="primary" onClick={showModal}>
           Close
