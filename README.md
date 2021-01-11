@@ -1,4 +1,5 @@
-# This Project Mainly
+# This Project WebApp Author Minh Son Nguyen
+# ORIGINAL
 ## React-VideoCall
 Demo app: https://morning-escarpment-67980.herokuapp.com/  
 
@@ -18,7 +19,7 @@ yarn install
 yarn watch:server
 
 # Run webpack-dev-server
-yarn watch:client // watch:client çalışmıyor "npm run build" --> "npm run watch:server"
+yarn watch:client
 ```
 
 
@@ -39,3 +40,8 @@ yarn build
 # Run server
 yarn start
 ```
+# OUR PROJECT
+* We added Human Segmentation with use BodyPix.
+* We added Object Detection with use cocossd.
+* Project powered By Tensorflow.js.
+* Project has mainly two bug But we only develop with only 4 day.
